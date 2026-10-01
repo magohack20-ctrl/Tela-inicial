@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Game Turbo - Launcher Gamer</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#031018;--panel:rgba(3,18,28,.88);--line:#00e6b0;--cyan:#00cfff;
+  --text:#f4fbff;--muted:#9fb4c5;--green:#19f29a;
+}
+body{
+  margin:0;min-height:100vh;background:#020a10;color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;z-index:-2;
+  background:
+   radial-gradient(circle at 50% 32%,rgba(0,190,255,.20),transparent 28%),
+   linear-gradient(#031b38 0 28%,#071b19 55%,#020a0d 100%);
+}
+body:after{
+  content:"";position:fixed;inset:0;z-index:-1;opacity:.5;
+  background:
+   linear-gradient(135deg,transparent 0 35%,rgba(20,255,120,.08) 35% 36%,transparent 36%),
+   repeating-linear-gradient(0deg,rgba(30,255,100,.035) 0 20px,transparent 20px 40px);
+}
+.app{max-width:520px;margin:auto;padding:18px 14px 100px}
+.top{display:flex;justify-content:space-between;align-items:flex-start}
+.clock{font-size:58px;font-weight:700;line-height:.95}
+.date{font-size:18px;margin-top:8px;color:#e8f5ff}
+.weather{margin-top:10px;font-size:17px}
+.mode{
+  display:flex;align-items:center;gap:12px;border:1px solid var(--line);
+  border-radius:28px;padding:10px 14px;background:rgba(0,20,28,.72);
+  box-shadow:0 0 18px rgba(0,255,170,.12);cursor:pointer;
+}
+.wifi{font-size:29px;color:var(--green)}
+.mode small{display:block;color:var(--green);font-size:14px;margin-top:3px}
+.search{
+  margin:22px 0;display:flex;align-items:center;gap:12px;padding:15px 18px;
+  border:1px solid #0bbbd8;border-radius:30px;background:rgba(2,20,31,.86)
+}
+.search span{font-size:28px}.search input{flex:1;background:none;border:0;outline:0;color:white;font-size:16px}
+.card{
+  border:1px solid var(--line);border-radius:22px;background:var(--panel);
+  box-shadow:0 0 22px rgba(0,255,170,.08);padding:16px;margin-bottom:22px
+}
+.booster-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.title{font-size:25px;font-weight:800}.sub{color:var(--muted);margin-top:5px}
+.boost-btn{
+  border:0;border-radius:25px;padding:13px 18px;background:var(--green);
+  color:#002116;font-weight:800;font-size:15px;cursor:pointer
+}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.stat{padding:11px 7px;border:1px solid #075f68;border-radius:15px;text-align:center}
+.stat b{display:block;color:var(--green);font-size:19px}.stat span{font-size:11px;color:var(--muted)}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.tool{
+  border:1px solid #087d80;border-radius:16px;padding:13px 5px;background:#031a20;
+  color:white;cursor:pointer;text-align:center
+}
+.tool .ico{font-size:23px}.tool.active{border-color:var(--green);box-shadow:inset 0 0 15px rgba(0,255,160,.08)}
+.tool small{display:block;color:var(--green);margin-top:5px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:18px 4px 12px}
+.section-head h2{font-size:20px;margin:0}.all{color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.item{
+  padding:10px 5px;border:1px solid #15475a;border-radius:16px;
+  background:rgba(2,20,31,.82);text-align:center;cursor:pointer
+}
+.icon{
+  width:58px;height:58px;margin:auto;border-radius:14px;display:grid;place-items:center;
+  font-size:35px;background:linear-gradient(145deg,#173e49,#07151d)
+}
+.item span{display:block;margin-top:7px;font-size:12px}
+.status{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.status b{color:var(--green)}
+nav{
+ position:fixed;left:50%;bottom:12px;transform:translateX(-50%);
+ width:min(490px,calc(100% - 24px));display:grid;grid-template-columns:repeat(4,1fr);
+ padding:10px;border:1px solid #16475a;border-radius:25px;background:rgba(2,13,21,.94);backdrop-filter:blur(12px)
+}
+nav button{border:0;background:none;color:#9db2c5;font-size:12px;cursor:pointer}
+nav .ni{display:block;font-size:23px;margin-bottom:4px}.selected{color:var(--green)}
+.toast{
+ position:fixed;left:50%;top:20px;transform:translateX(-50%) translateY(-120px);
+ background:#05271e;border:1px solid var(--green);padding:12px 18px;border-radius:20px;
+ transition:.3s;z-index:10
+}.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:390px){
+ .clock{font-size:46px}.mode{padding:8px 10px}.mode strong{font-size:13px}
+ .stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(3,1fr)}
+ .booster-head{align-items:flex-start;flex-direction:column}.boost-btn{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div>
+      <div class="clock" id="clock">12:34</div>
+      <div class="date" id="date">Sáb, 26 Abr</div>
+      <div class="weather">🌤️ &nbsp;28°C</div>
+    </div>
+    <button class="mode" id="modeBtn" onclick="toggleMode()">
+      <span class="wifi">⌁</span>
+      <span><strong>Modo Gamer</strong><small id="modeText">Desativado</small></span>
+    </button>
+  </div>
+
+  <div class="search">
+    <span>⌕</span><input id="search" placeholder="Buscar jogos e aplicativos..." oninput="filterItems()">
+    <span>🎙️</span>
+  </div>
+
+  <section class="card">
+    <div class="booster-head">
+      <div><div class="title">🎮 Game Booster</div><div class="sub">Mais desempenho para seus jogos</div></div>
+      <button class="boost-btn" onclick="optimize()">🚀 Otimizar Agora</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>60</b><span>FPS alvo</span></div>
+      <div class="stat"><b>38°C</b><span>Temp.</span></div>
+      <div class="stat"><b>2.4 GB</b><span>RAM</span></div>
+      <div class="stat"><b>78%</b><span>Bateria</span></div>
+    </div>
+
+    <div class="tools">
+      <button class="tool active" onclick="tool(this)">🎮<small>Modo de Jogo</small></button>
+      <button class="tool active" onclick="tool(this)">🔕<small>Notificações</small></button>
+      <button class="tool" onclick="tool(this)">⏺️<small>Gravação</small></button>
+      <button class="tool active" onclick="tool(this)">⌁<small>Acelerar Rede</small></button>
+      <button class="tool" onclick="tool(this)">🌡️<small>Temperatura</small></button>
+      <button class="tool active" onclick="tool(this)">🧹<small>Limpar RAM</small></button>
+    </div>
+  </section>
+
+  <div class="section-head"><h2>🎮 Jogos favoritos</h2><span class="all">Ver todos ›</span></div>
+  <div class="grid" id="games">
+    <div class="item" data-name="Free Fire"><div class="icon">🔥</div><span>Free Fire</span></div>
+    <div class="item" data-name="Minecraft"><div class="icon">🟩</div><span>Minecraft</span></div>
+    <div class="item" data-name="PUBG Mobile"><div class="icon">🪖</div><span>PUBG Mobile</span></div>
+    <div class="item" data-name="Call of Duty"><div class="icon">🎯</div><span>Call of Duty</span></div>
+  </div>
+
+  <div class="section-head"><h2>▦ Aplicativos</h2><span class="all">Ver todos ›</span></div>
+  <div class="grid" id="apps">
+    <div class="item" data-name="Chrome"><div class="icon">🌐</div><span>Chrome</span></div>
+    <div class="item" data-name="YouTube"><div class="icon">▶️</div><span>YouTube</span></div>
+    <div class="item" data-name="WhatsApp"><div class="icon">💬</div><span>WhatsApp</span></div>
+    <div class="item" data-name="Instagram"><div class="icon">📷</div><span>Instagram</span></div>
+    <div class="item" data-name="TikTok"><div class="icon">🎵</div><span>TikTok</span></div>
+    <div class="item" data-name="Configurações"><div class="icon">⚙️</div><span>Config.</span></div>
+  </div>
+
+  <div class="card status">
+    <div><b id="statusTitle">Modo Gamer Desativado</b><div class="sub">Ative o botão Wi‑Fi para iniciar o modo gamer.</div></div>
+    <span style="font-size:28px">›</span>
+  </div>
+</div>
+
+<nav>
+  <button class="selected"><span class="ni">⌂</span>Início</button>
+  <button><span class="ni">🎮</span>Jogos</button>
+  <button><span class="ni">▦</span>Apps</button>
+  <button><span class="ni">⚙️</span>Config.</button>
+</nav>
+
+<div class="toast" id="toast">Game Booster ativado!</div>
+
+<script>
+let gamer=false;
+function toggleMode(){
+  gamer=!gamer;
+  document.getElementById('modeText').textContent=gamer?'Ativo':'Desativado';
+  document.getElementById('statusTitle').textContent='Modo Gamer '+(gamer?'Ativo':'Desativado');
+  showToast(gamer?'🎮 Modo Gamer ativado':'Modo Gamer desativado');
+}
+function optimize(){
+  gamer=true;
+  document.getElementById('modeText').textContent='Ativo';
+  document.getElementById('statusTitle').textContent='Modo Gamer Ativo';
+  showToast('🚀 Game Booster: otimização concluída!');
+}
+function tool(el){
+  el.classList.toggle('active');
+  const s=el.querySelector('small');
+  if(s) s.style.color=el.classList.contains('active')?'#19f29a':'#9fb4c5';
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+function filterItems(){
+  const q=document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.item').forEach(x=>{
+    x.style.display=x.dataset.name.toLowerCase().includes(q)?'block':'none';
+  });
+}
+function clock(){
+  const d=new Date();
+  document.getElementById('clock').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('date').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
+}
+clock();setInterval(clock,1000);
+</script>
+</body>
+</html>
